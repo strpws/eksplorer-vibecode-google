@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=PT+Sans:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "PT Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Lora", ui-serif, Georgia, serif;
+  
+  --color-brand-blue: #00599A;
+  --color-brand-red: #c92b2c;
+  --color-brand-gold: #F3C727;
+}
+
+@layer base {
+  body {
+    @apply font-serif bg-white text-black;
+  }
+}
+
+.keyword {
+  @apply font-sans font-bold uppercase text-brand-red;
+}
+
+.chart-text {
+  @apply font-sans;
+}
+
+.chart-text-bold {
+  @apply font-sans font-bold;
+}

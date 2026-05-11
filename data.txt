@@ -1,0 +1,7 @@
+Universitas	Provinsi	Kota	Program Studi	Bidang Ilmu	Jenjang	Daya Tampung 2026	Peminat 2025	Peminat 2025 (Num)	Rasio	Situs
+UNIVERSITAS SYIAH KUALA	Aceh	Kota Banda Aceh	PENDIDIKAN DOKTER HEWAN	KEDOKTERAN HEWAN	Sarjana	84	488	488	1:6	https://pmb.usk.ac.id/
+UNIVERSITAS SYIAH KUALA	Aceh	Kota Banda Aceh	TEKNIK SIPIL	TEKNIK SIPIL	Sarjana	98	736	736	1:8	https://pmb.usk.ac.id/
+UNIVERSITAS INDONESIA	Jawa Barat	Kota Depok	ILMU KOMPUTER	KOMPUTER	Sarjana	60	2500	2500	1:42	https://penerimaan.ui.ac.id/
+UNIVERSITAS GADJAH MADA	DI Yogyakarta	Kab. Sleman	KEDOKTERAN	KEDOKTERAN	Sarjana	50	3500	3500	1:70	https://um.ugm.ac.id/
+UNIVERSITAS DIPONEGORO	Jawa Tengah	Kota Semarang	BISNIS DIGITAL	EKONOMI	Sarjana	40				https://pmb.undip.ac.id/
+INSTITUT TEKNOLOGI BANDUNG	Jawa Barat	Kota Bandung	ARSITEKTUR	DESAIN	Sarjana	55	120	120	1:2	https://admission.itb.ac.id/
