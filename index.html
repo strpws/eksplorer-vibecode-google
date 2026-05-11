@@ -1,13 +1,429 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Google AI Studio App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eksplorasi Data SNBT-UTBK 2026</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&family=PT+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS (Play CDN untuk kemudahan satu file) -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --font-sans: "PT Sans", ui-sans-serif, system-ui, sans-serif;
+            --font-serif: "Lora", ui-serif, Georgia, serif;
+            --color-brand-blue: #00599A;
+            --color-brand-red: #c92b2c;
+            --color-brand-gold: #F3C727;
+        }
+        @layer base {
+            body { @apply font-serif bg-white text-black; }
+        }
+        .keyword { @apply font-sans font-bold uppercase text-brand-red; }
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+    </style>
+</head>
+<body class="selection:bg-brand-gold/30">
 
+    <!-- Header -->
+    <header class="max-w-7xl mx-auto px-4 py-12 md:py-16 text-center border-b border-gray-100">
+        <span class="keyword mb-4 block">Eksklusif Kompas</span>
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+            Jelajahi Daya Tampung & Peminat <span class="text-brand-blue">SNBT-UTBK 2026</span>
+        </h1>
+        <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            Gunakan alat interaktif ini untuk mencari jurusan impian di Perguruan Tinggi Negeri (PTN) pilihan Anda. Data mencakup daya tampung terkini, riwayat peminat, dan tingkat keketatan persaingan.
+        </p>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-8">
+        <!-- Filter Panel -->
+        <div class="bg-gray-50 border border-gray-200 p-6 md:p-8 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                <div>
+                    <label class="text-[10px] uppercase font-bold tracking-wider text-gray-500 font-sans block mb-2">Provinsi</label>
+                    <select id="filter-provinsi" class="w-full p-2.5 bg-white border border-gray-300 focus:outline-none focus:ring-1 focus:ring-brand-blue font-sans text-sm outline-none cursor-pointer">
+                        <option value="">Semua Provinsi</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-bold tracking-wider text-gray-500 font-sans block mb-2">Universitas</label>
+                    <select id="filter-universitas" class="w-full p-2.5 bg-white border border-gray-300 focus:outline-none focus:ring-1 focus:ring-brand-blue font-sans text-sm outline-none cursor-pointer">
+                        <option value="">Semua PTN</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-bold tracking-wider text-gray-500 font-sans block mb-2">Bidang Ilmu</label>
+                    <select id="filter-bidang" class="w-full p-2.5 bg-white border border-gray-300 focus:outline-none focus:ring-1 focus:ring-brand-blue font-sans text-sm outline-none cursor-pointer">
+                        <option value="">Semua Bidang</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-bold tracking-wider text-gray-500 font-sans block mb-2">Jenjang</label>
+                    <select id="filter-jenjang" class="w-full p-2.5 bg-white border border-gray-300 focus:outline-none focus:ring-1 focus:ring-brand-blue font-sans text-sm outline-none cursor-pointer">
+                        <option value="">Semua Jenjang</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase font-bold tracking-wider text-gray-500 font-sans block mb-2">Cari Program Studi</label>
+                    <input type="text" id="search-prodi" placeholder="Ketik nama prodi..." class="w-full p-2.5 bg-white border border-gray-300 focus:outline-none focus:ring-1 focus:ring-brand-blue font-sans text-sm outline-none">
+                </div>
+            </div>
+            <div class="mt-8 flex justify-end">
+                <button id="btn-reset" class="flex items-center gap-2 px-4 py-2 text-brand-red hover:bg-brand-red/5 font-sans font-bold transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    Reset Filter
+                </button>
+            </div>
+        </div>
+
+        <!-- Summary Bar -->
+        <div id="summary-bar" class="grid grid-cols-2 lg:grid-cols-4 gap-0 mb-8 border border-gray-100 shadow-sm overflow-hidden rounded-lg bg-white">
+            <div class="p-4 border-r border-b lg:border-b-0 border-gray-100 text-center">
+                <div class="text-[10px] uppercase font-bold text-gray-400 font-sans tracking-tight mb-1">Program Studi</div>
+                <div id="stat-prodi" class="text-3xl font-sans font-bold text-brand-blue">0</div>
+            </div>
+            <div class="p-4 lg:border-r border-b lg:border-b-0 border-gray-100 text-center">
+                <div class="text-[10px] uppercase font-bold text-gray-400 font-sans tracking-tight mb-1">PTN</div>
+                <div id="stat-ptn" class="text-3xl font-sans font-bold text-brand-blue">0</div>
+            </div>
+            <div class="p-4 border-r border-gray-100 text-center">
+                <div class="text-[10px] uppercase font-bold text-gray-400 font-sans tracking-tight mb-1">Kuota 2026</div>
+                <div id="stat-kuota" class="text-3xl font-sans font-bold text-brand-gold">0</div>
+            </div>
+            <div class="p-4 text-center">
+                <div class="text-[10px] uppercase font-bold text-gray-400 font-sans tracking-tight mb-1">Peminat 2025</div>
+                <div id="stat-peminat" class="text-3xl font-sans font-bold text-brand-red">0</div>
+            </div>
+        </div>
+
+        <!-- Tip -->
+        <div class="mb-4 flex flex-col md:flex-row justify-between items-center text-sm font-sans text-gray-400 gap-2">
+            <div class="bg-brand-gold/10 px-3 py-1 rounded-full text-yellow-700 font-medium text-xs">
+                💡 Tip: Klik judul kolom untuk mengurutkan data
+            </div>
+            <div id="pagination-info" class="font-medium">
+                Memuat data...
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white border border-gray-200 overflow-x-auto shadow-sm">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="bg-gray-50 text-left">
+                        <th data-sort="Universitas" class="p-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 font-sans border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap">PTN</th>
+                        <th data-sort="Program Studi" class="p-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 font-sans border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap">Program Studi</th>
+                        <th data-sort="Bidang Ilmu" class="p-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 font-sans border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap hidden md:table-cell">Bidang Ilmu</th>
+                        <th data-sort="Jenjang" class="p-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 font-sans border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors whitespace-nowrap">Jenjang</th>
+                        <th data-sort="Daya Tampung 2026" class="p-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 font-sans border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors text-right whitespace-nowrap">Kuota '26</th>
+                        <th data-sort="Peminat 2025" class="p-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 font-sans border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors text-right whitespace-nowrap">Minat '25</th>
+                        <th data-sort="Rasio" class="p-4 text-[10px] font-bold uppercase tracking-wider text-gray-500 font-sans border-b border-gray-200 cursor-pointer hover:bg-gray-100 transition-colors text-right whitespace-nowrap">Rasio</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body" class="font-sans">
+                    <!-- Data rendered via JS -->
+                </tbody>
+            </table>
+            <div id="empty-state" class="hidden py-20 text-center font-serif text-gray-300">
+                <div class="text-4xl mb-4">🔍</div>
+                <p>Tidak ada data yang cocok dengan kriteria filter Anda.</p>
+            </div>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div id="pagination-controls" class="mt-8 flex flex-col md:flex-row justify-between items-center gap-4 border-t border-gray-100 pt-8">
+            <!-- Rendered via JS -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-100 mt-20 py-12 px-4 shadow-inner">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12">
+            <div class="space-y-6">
+                <h3 class="font-sans font-bold uppercase tracking-widest text-gray-400 text-[10px] text-center md:text-left">Tentang Data Ini</h3>
+                <div class="space-y-4 text-sm leading-loose text-gray-500">
+                    <p><b>Sumber Data:</b> Diolah dari portal resmi Seleksi Nasional Penerimaan Mahasiswa Baru (SNPMB) 2026.</p>
+                    <p><b>Prodi Baru:</b> Merupakan program studi yang baru dibuka tahun ini atau mengalami restrukturisasi sehingga data peminat tahun 2025 belum tersedia. Rasio keketatan dihitung dengan membagi jumlah peminat tahun 2025 dengan daya tampung tahun 2026.</p>
+                    <p><b>Tingkat Keketatan:</b> 
+                        <span class="inline-block ml-1 px-1.5 py-0.5 rounded text-[10px] bg-brand-blue/10 text-brand-blue font-bold uppercase mr-1 border border-brand-blue/20">Ketat (1:10+)</span>
+                        <span class="inline-block px-1.5 py-0.5 rounded text-[10px] bg-brand-gold/10 text-yellow-800 font-bold uppercase mr-1 border border-brand-gold/30">Sedang (1:3-10)</span>
+                        <span class="inline-block px-1.5 py-0.5 rounded text-[10px] bg-green-50 text-green-700 font-bold uppercase border border-green-200">Rendah (1:0-3)</span>
+                    </p>
+                </div>
+            </div>
+            <div class="flex flex-col items-center md:items-end justify-center md:justify-end gap-6 border-t md:border-t-0 md:border-l border-gray-100 pt-8 md:pt-0 md:pl-12">
+                <div class="text-center md:text-right">
+                    <div class="text-4xl font-serif font-bold text-brand-red mb-1">kompas.id</div>
+                    <div class="text-[10px] font-sans font-bold uppercase tracking-tight text-gray-400">Amanat Hati Nurani Rakyat</div>
+                </div>
+                <div class="text-[10px] font-sans text-gray-400 italic uppercase tracking-wider">
+                    Diolah: Kompas/ST
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let rawData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        const itemsPerPage = 20;
+        let sortConfig = { key: null, direction: 'asc' };
+
+        const el = id => document.getElementById(id);
+
+        async function init() {
+            try {
+                const response = await fetch('data.txt');
+                if (!response.ok) throw new Error('File data.txt tidak ditemukan.');
+                const text = await response.text();
+                parseData(text);
+                setupFilters();
+                updateUI();
+            } catch (err) {
+                console.error(err);
+                el('pagination-info').innerHTML = '<span class="text-brand-red">Gagal memuat data. Periksa file data.txt.</span>';
+            }
+        }
+
+        function parseData(tsvText) {
+            const lines = tsvText.split('\n').filter(l => l.trim() !== '');
+            const headers = lines[0].split('\t').map(h => h.trim());
+            
+            rawData = lines.slice(1).map(line => {
+                const values = line.split('\t');
+                const entry = {};
+                headers.forEach((header, i) => {
+                    entry[header] = values[i] ? values[i].trim() : '';
+                });
+                
+                // Cleanup numeric fields
+                entry['Daya Tampung 2026'] = parseInt(entry['Daya Tampung 2026']) || 0;
+                entry['Peminat 2025 (Num)'] = entry['Peminat 2025 (Num)'] ? parseInt(entry['Peminat 2025 (Num)']) : null;
+                
+                return entry;
+            });
+            filteredData = [...rawData];
+        }
+
+        function setupFilters() {
+            const populateSelect = (id, key) => {
+                const select = el(id);
+                const options = [...new Set(rawData.map(d => d[key]))].filter(Boolean).sort();
+                options.forEach(opt => {
+                    const o = document.createElement('option');
+                    o.value = opt;
+                    o.textContent = opt;
+                    select.appendChild(o);
+                });
+            };
+
+            populateSelect('filter-provinsi', 'Provinsi');
+            populateSelect('filter-bidang', 'Bidang Ilmu');
+            populateSelect('filter-jenjang', 'Jenjang');
+            
+            const updatePTN = () => {
+                const select = el('filter-universitas');
+                const prov = el('filter-provinsi').value;
+                select.innerHTML = '<option value="">Semua PTN</option>';
+                const filteredPTN = [...new Set(rawData.filter(d => !prov || d.Provinsi === prov).map(d => d.Universitas))].sort();
+                filteredPTN.forEach(opt => {
+                    const o = document.createElement('option');
+                    o.value = opt;
+                    o.textContent = opt;
+                    select.appendChild(o);
+                });
+            };
+
+            const filters = ['filter-provinsi', 'filter-universitas', 'filter-bidang', 'filter-jenjang'];
+            filters.forEach(id => el(id).addEventListener('change', () => {
+                if (id === 'filter-provinsi') updatePTN();
+                applyFilters();
+            }));
+
+            el('search-prodi').addEventListener('input', applyFilters);
+            el('btn-reset').addEventListener('click', () => {
+                el('filter-provinsi').value = '';
+                el('filter-bidang').value = '';
+                el('filter-jenjang').value = '';
+                el('search-prodi').value = '';
+                updatePTN();
+                applyFilters();
+            });
+
+            // PTN khusus diupdate awal
+            updatePTN();
+        }
+
+        function applyFilters() {
+            const fProv = el('filter-provinsi').value;
+            const fUni = el('filter-universitas').value;
+            const fBid = el('filter-bidang').value;
+            const fJen = el('filter-jenjang').value;
+            const fSearch = el('search-prodi').value.toLowerCase();
+
+            filteredData = rawData.filter(d => {
+                const mProv = !fProv || d.Provinsi === fProv;
+                const mUni = !fUni || d.Universitas === fUni;
+                const mBid = !fBid || d['Bidang Ilmu'] === fBid;
+                const mJen = !fJen || d.Jenjang === fJen;
+                const mSearch = !fSearch || 
+                    d['Program Studi'].toLowerCase().includes(fSearch) || 
+                    d.Universitas.toLowerCase().includes(fSearch);
+                return mProv && mUni && mBid && mJen && mSearch;
+            });
+
+            currentPage = 1;
+            applySort();
+            updateUI();
+        }
+
+        function applySort() {
+            if (!sortConfig.key) return;
+            filteredData.sort((a, b) => {
+                let vA = a[sortConfig.key];
+                let vB = b[sortConfig.key];
+
+                if (sortConfig.key === 'Rasio') {
+                    vA = vA ? parseFloat(vA.split(':')[1]) || 0 : -1;
+                    vB = vB ? parseFloat(vB.split(':')[1]) || 0 : -1;
+                }
+
+                if (vA === null || vA === '') return 1;
+                if (vB === null || vB === '') return -1;
+                
+                if (vA < vB) return sortConfig.direction === 'asc' ? -1 : 1;
+                if (vA > vB) return sortConfig.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        function updateUI() {
+            // Stats
+            el('stat-prodi').textContent = filteredData.length.toLocaleString('id-ID');
+            el('stat-ptn').textContent = new Set(filteredData.map(d => d.Universitas)).size.toLocaleString('id-ID');
+            el('stat-kuota').textContent = filteredData.reduce((s, d) => s + d['Daya Tampung 2026'], 0).toLocaleString('id-ID');
+            el('stat-peminat').textContent = filteredData.reduce((s, d) => s + (d['Peminat 2025 (Num)'] || 0), 0).toLocaleString('id-ID');
+
+            // Table
+            const start = (currentPage - 1) * itemsPerPage;
+            const pageData = filteredData.slice(start, start + itemsPerPage);
+            const tbody = el('table-body');
+            tbody.innerHTML = '';
+
+            if (pageData.length === 0) {
+                el('empty-state').classList.remove('hidden');
+                el('summary-bar').classList.add('opacity-50');
+                el('pagination-info').textContent = 'Tidak ada data';
+            } else {
+                el('empty-state').classList.add('hidden');
+                el('summary-bar').classList.remove('opacity-50');
+                el('pagination-info').textContent = `Menampilkan ${(start + 1).toLocaleString('id-ID')}–${Math.min(start + itemsPerPage, filteredData.length).toLocaleString('id-ID')} dari ${filteredData.length.toLocaleString('id-ID')}`;
+                
+                pageData.forEach((d, idx) => {
+                    const tr = document.createElement('tr');
+                    tr.className = `border-b border-gray-100 hover:bg-brand-blue/5 transition-colors group ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`;
+                    
+                    let ratioHtml = '';
+                    if (!d.Rasio) {
+                        ratioHtml = '<span class="inline-flex px-2 py-1 rounded text-[10px] italic text-gray-400 bg-gray-100 uppercase font-medium">Prodi baru</span>';
+                    } else {
+                        const val = parseFloat(d.Rasio.split(':')[1]);
+                        let cls = '';
+                        let lbl = '';
+                        if (val >= 10) { cls = 'bg-brand-blue/10 text-brand-blue border-brand-blue/20'; lbl = 'ketat'; }
+                        else if (val >= 3) { cls = 'bg-brand-gold/10 text-yellow-800 border-brand-gold/30'; lbl = 'sedang'; }
+                        else { cls = 'bg-green-50 text-green-700 border-green-200'; lbl = 'rendah'; }
+                        ratioHtml = `<span class="inline-flex px-2 py-1 rounded text-[10px] font-bold uppercase border tabular-nums ${cls}">${d.Rasio} • ${lbl}</span>`;
+                    }
+
+                    tr.innerHTML = `
+                        <td class="p-4 text-sm font-medium">
+                            <div class="text-gray-900 group-hover:text-brand-blue transition-colors leading-tight">${d.Universitas}</div>
+                            <div class="text-[9px] text-gray-400 uppercase tracking-widest mt-0.5">${d.Provinsi}</div>
+                        </td>
+                        <td class="p-4 text-sm font-bold text-gray-800 leading-tight">
+                            <div class="flex items-center gap-2">
+                                ${d['Program Studi']}
+                                ${d.Situs ? `<a href="${d.Situs}" target="_blank" class="text-gray-300 hover:text-brand-blue"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg></a>` : ''}
+                            </div>
+                        </td>
+                        <td class="p-4 text-xs text-gray-400 hidden md:table-cell">${d['Bidang Ilmu']}</td>
+                        <td class="p-4 text-xs text-gray-500">${d.Jenjang}</td>
+                        <td class="p-4 text-sm font-bold text-right text-gray-900 tabular-nums">${d['Daya Tampung 2026'].toLocaleString('id-ID')}</td>
+                        <td class="p-4 text-sm font-medium text-right text-gray-900 tabular-nums">${d['Peminat 2025 (Num)'] ? d['Peminat 2025 (Num)'].toLocaleString('id-ID') : '—'}</td>
+                        <td class="p-4 text-right">${ratioHtml}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const container = el('pagination-controls');
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+            let html = `
+                <div class="text-sm font-sans text-gray-400">Halaman ${currentPage.toLocaleString('id-ID')} dari ${totalPages.toLocaleString('id-ID')}</div>
+                <div class="flex gap-1">
+                    <button onclick="setPage(1)" class="p-2 border border-gray-200 rounded hover:bg-gray-50 text-gray-400 transition-all ${currentPage === 1 ? 'opacity-30 cursor-not-allowed' : ''}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/></svg></button>
+                    <button onclick="setPage(${currentPage - 1})" class="px-3 py-2 border border-gray-200 rounded hover:bg-gray-50 text-xs font-bold font-sans text-gray-500 transition-all ${currentPage === 1 ? 'opacity-30 cursor-not-allowed' : ''}">PREV</button>
+                    <div class="flex gap-1 mx-2">
+            `;
+
+            const startIdx = Math.max(1, Math.min(currentPage - 2, totalPages - 4));
+            const endIdx = Math.min(totalPages, startIdx + 4);
+
+            for (let i = startIdx; i <= endIdx; i++) {
+                html += `<button onclick="setPage(${i})" class="w-10 h-10 border text-xs font-bold font-sans transition-all ${currentPage === i ? 'bg-brand-blue text-white border-brand-blue shadow-lg shadow-brand-blue/20' : 'bg-white border-gray-200 text-gray-400 hover:border-brand-blue/30 hover:text-brand-blue'}">${i}</button>`;
+            }
+
+            html += `
+                    </div>
+                    <button onclick="setPage(${currentPage + 1})" class="px-3 py-2 border border-gray-200 rounded hover:bg-gray-50 text-xs font-bold font-sans text-gray-500 transition-all ${currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : ''}">NEXT</button>
+                    <button onclick="setPage(${totalPages})" class="p-2 border border-gray-200 rounded hover:bg-gray-50 text-gray-400 transition-all ${currentPage === totalPages ? 'opacity-30 cursor-not-allowed' : ''}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m13 17 5-5-5-5M6 17l5-5-5-5"/></svg></button>
+                </div>
+            `;
+            container.innerHTML = html;
+        }
+
+        window.setPage = page => {
+            const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            updateUI();
+            window.scrollTo({ top: el('summary-bar').offsetTop - 20, behavior: 'smooth' });
+        };
+
+        // Table sorting
+        document.querySelectorAll('th[data-sort]').forEach(th => {
+            th.addEventListener('click', () => {
+                const key = th.getAttribute('data-sort');
+                if (sortConfig.key === key) {
+                    sortConfig.direction = sortConfig.direction === 'asc' ? 'desc' : 'asc';
+                } else {
+                    sortConfig.key = key;
+                    sortConfig.direction = 'asc';
+                }
+                applySort();
+                updateUI();
+                
+                // Clear other headers
+                document.querySelectorAll('th[data-sort]').forEach(h => {
+                    const baseText = h.textContent.replace(' ↑', '').replace(' ↓', '');
+                    h.textContent = baseText;
+                });
+                th.textContent += sortConfig.direction === 'asc' ? ' ↑' : ' ↓';
+            });
+        });
+
+        init();
+    </script>
+</body>
+</html>
