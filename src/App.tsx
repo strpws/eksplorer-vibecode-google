@@ -33,7 +33,7 @@ export default function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/data.txt');
+        const response = await fetch('data.txt');
         if (!response.ok) throw new Error('Gagal memuat data.');
         const text = await response.text();
 
